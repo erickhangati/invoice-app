@@ -1,0 +1,33 @@
+@use '../../styles/mixins.scss' as mixins;
+
+.layout {
+  // display: grid;
+  // grid-template-columns: 10.3rem 1fr;
+  background-color: var(--white);
+  min-height: 100vh;
+
+  @include mixins.respond(tablet) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 8rem;
+  }
+
+  @include mixins.respond(tablet-sm) {
+    grid-template-rows: 10rem;
+  }
+
+  & main {
+    padding: 7.7rem 20.65% 4rem 20.65%;
+
+    @include mixins.respond(laptop-lg) {
+      padding: 7.7rem 10.65% 4rem 20.65%;
+    }
+
+    @include mixins.respond(laptop) {
+      padding: 7.7rem 10.65% 4rem 20.65%;
+    }
+
+    @include mixins.respond(tablet) {
+      padding: 15.7rem 7.65% 4rem 7.65%;
+    }
+  }
+}

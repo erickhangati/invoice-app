@@ -1,0 +1,28 @@
+.delete-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+
+  & h2 {
+    font-size: 2.4rem;
+    color: var(--black-01-v1);
+    letter-spacing: -0.5px;
+  }
+
+  &__text {
+    font-size: 1.4rem;
+    line-height: 2.2rem;
+    letter-spacing: -0.1px;
+    color: var(--light-blue-02);
+
+    & span {
+      color: var(--orange-01);
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: flex-end;
+  }
+}

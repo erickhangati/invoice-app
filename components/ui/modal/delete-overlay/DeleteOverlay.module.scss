@@ -1,0 +1,21 @@
+@use '../../../../styles/mixins.scss' as mixins;
+
+.overlay {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 33.33%;
+  z-index: 12;
+  background-color: var(--white-v1);
+  border-radius: 0.8rem;
+  padding: 5.2rem 4.8rem;
+
+  @include mixins.respond(laptop) {
+    width: 50%;
+  }
+
+  @include mixins.respond(tablet) {
+    width: 70%;
+  }
+}

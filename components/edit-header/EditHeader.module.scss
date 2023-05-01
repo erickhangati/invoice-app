@@ -1,0 +1,56 @@
+@use '../../styles/mixins.scss' as mixins;
+
+.edit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--white-v1);
+  padding: 2.8rem 3.2rem;
+  border-radius: 0.8rem;
+  box-shadow: 0 10px 10px -10px rgba(72, 84, 159, 0.104);
+  margin-bottom: 2.4rem;
+
+  &__status,
+  &__buttons {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  &__status {
+    @include mixins.respond(phone) {
+      width: 100%;
+    }
+  }
+
+  &__buttons {
+    @include mixins.respond(phone) {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: var(--white-v1);
+      padding: 2.8rem 7.65%;
+    }
+
+    &--delete {
+      @include mixins.respond(phone) {
+        margin-left: auto;
+      }
+    }
+  }
+}
+
+.status-label {
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: -0.1px;
+  color: #858bb2;
+}
+
+.status-badge {
+  @include mixins.respond(phone) {
+    width: fit-content;
+    margin-left: auto;
+  }
+}

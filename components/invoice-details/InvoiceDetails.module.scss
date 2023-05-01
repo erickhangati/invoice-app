@@ -1,0 +1,214 @@
+@use '../../styles/mixins.scss' as mixins;
+
+.invoice {
+  background-color: var(--white-v1);
+  padding: 3.3rem 3.2rem;
+  border-radius: 0.8rem;
+  box-shadow: 0 10px 10px -10px rgba(72, 84, 159, 0.104);
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3.2rem;
+
+    @include mixins.respond(phone) {
+      flex-direction: column;
+      justify-content: unset;
+      gap: 3rem;
+    }
+  }
+
+  &-description {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+
+    &__id {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.25px;
+      color: var(--light-blue-02);
+
+      & span {
+        color: var(--black-01-v1);
+      }
+    }
+
+    &__title {
+      font-size: 1.5rem;
+      letter-spacing: -0.1px;
+      color: var(--light-blue-01-v1);
+    }
+  }
+
+  &-address {
+    text-align: right;
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.1px;
+    color: var(--light-blue-01-v1);
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+
+    @include mixins.respond(phone) {
+      text-align: left;
+    }
+  }
+
+  &-address.invoice-address--client {
+    text-align: left;
+  }
+}
+
+.client-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr;
+  margin-bottom: 4.2rem;
+
+  @include mixins.respond(phone) {
+    grid-template-columns: 1fr 1.2fr;
+  }
+
+  &__column,
+  &__row {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__column {
+    gap: 3.2rem;
+  }
+
+  &__row {
+    gap: 1.3rem;
+
+    & h2 {
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: -0.25px;
+      color: var(--light-blue-02);
+    }
+
+    & span {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--black-01-v1);
+    }
+  }
+}
+
+.invoice-summary {
+  border-radius: 0.8rem;
+  overflow: hidden;
+}
+
+.invoice-table,
+.invoice-totals {
+  padding: 3.2rem;
+}
+
+.invoice-table {
+  background-color: var(--light-grey);
+
+  &__header,
+  &__item {
+    display: grid;
+    grid-template-columns: 1.2fr 0.2fr 0.45fr 0.55fr;
+
+    @include mixins.respond(phone) {
+      grid-template-columns: 1.4fr 1fr;
+      grid-template-rows: repeat(2, 1fr);
+      row-gap: 1.2rem;
+    }
+  }
+
+  &__header {
+    font-size: 1.3rem;
+    font-weight: 500;
+    letter-spacing: -0.1px;
+    color: var(--light-blue-01-v1);
+    margin-bottom: 1.6rem;
+
+    @include mixins.respond(phone) {
+      display: none;
+    }
+  }
+
+  &__item {
+    padding: 1.6rem 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.25px;
+  }
+}
+
+.invoice-totals {
+  color: #ffffff;
+  background-color: var(--black-03);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__label {
+    font-size: 1.4rem;
+    letter-spacing: -0.1px;
+  }
+
+  &__amount {
+    font-size: 2.4rem;
+    letter-spacing: -0.5px;
+    font-weight: 700;
+  }
+}
+
+.table-header-qty,
+.item-qty {
+  justify-self: center;
+}
+
+.item-name,
+.item-total {
+  color: var(--black-01-v1);
+}
+
+.table-header-price,
+.item-price,
+.table-header-total,
+.item-total {
+  justify-self: end;
+}
+
+.table-header-qty,
+.item-qty,
+.table-header-price,
+.item-price,
+.item-price--mobile {
+  color: var(--light-blue-01-v1);
+}
+
+.item-price,
+.item-qty {
+  @include mixins.respond(phone) {
+    display: none;
+  }
+}
+
+.item-price--mobile {
+  display: none;
+
+  @include mixins.respond(phone) {
+    display: block;
+    grid-column: 1 / 2;
+  }
+}
+
+.item-total {
+  @include mixins.respond(phone) {
+    grid-column: 2 / 3;
+    grid-row: 1 / span 2;
+    align-self: center;
+  }
+}

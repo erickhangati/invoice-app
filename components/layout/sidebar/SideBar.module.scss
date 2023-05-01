@@ -1,0 +1,63 @@
+@use '../../../styles/mixins.scss' as mixins;
+
+.sidebar {
+  min-height: 100vh;
+  background-color: var(--black-03);
+  border-radius: 0 2rem 2rem 0;
+
+  // Floating
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+
+  display: flex;
+  flex-direction: column;
+
+  @include mixins.respond(tablet) {
+    flex-direction: row;
+    min-height: unset;
+    border-radius: unset;
+    max-height: 8rem;
+    width: 100%;
+  }
+
+  @include mixins.respond(tablet-sm) {
+    max-height: 10rem;
+  }
+
+  &__logo-icon {
+    margin-bottom: auto;
+
+    @include mixins.respond(tablet) {
+      margin-bottom: unset;
+      margin-right: auto;
+      height: 8rem;
+    }
+
+    @include mixins.respond(tablet-sm) {
+      height: 10rem;
+    }
+
+    & svg {
+      @include mixins.respond(tablet) {
+        width: 8rem;
+        height: 8rem;
+      }
+
+      @include mixins.respond(tablet-sm) {
+        width: 10rem;
+        height: 10rem;
+      }
+    }
+  }
+
+  &__profile {
+    border-top: 1px solid #4f5577;
+
+    @include mixins.respond(tablet) {
+      border-top: unset;
+      border-left: 1px solid #4f5577;
+    }
+  }
+}

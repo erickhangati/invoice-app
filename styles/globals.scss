@@ -1,0 +1,200 @@
+@use './mixins.scss' as mixins;
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@500;700&display=swap');
+
+:root {
+  /* COLORS */
+
+  --black-01: #0c0e16;
+  --black-01-v1: #0c0e16;
+  --black-01-v2: #0c0e16;
+
+  --black-02: #141625;
+  --black-03: #373b53;
+  --purple-01: #7c5dfa;
+  --purple-02: #9277ff;
+  --navy-blue-01: #1e2139;
+  --navy-blue-02: #252945;
+
+  --light-blue-01: #7e88c3;
+  --light-blue-01-v1: #7e88c3;
+
+  --light-blue-02: #888eb0;
+
+  --light-blue-03: #dfe3fa;
+  --light-blue-03-v1: #dfe3fa;
+  --light-blue-03-v2: #dfe3fa;
+  --light-blue-03-v3: #dfe3fa;
+
+  --orange-01: #ec5757;
+  --orange-02: #ff9797;
+  --light-grey: #f9fafe;
+  --light-grey-v1: #f9fafe;
+  --white: #eeeeee;
+  --white-v1: #ffffff;
+
+  // BOX SHADOWS
+
+  --box-shadow-v1: 0 10px 20px rgba(72, 84, 159, 0.25);
+
+  // TOASTIFY
+  --toastify-color-success: #7e88c3;
+  --toastify-toast-background: #ffffff;
+  --toastify-spinner-color: var(--light-blue-02);
+}
+
+[data-theme='light'] {
+  --light-grey: #f9fafe;
+  --light-blue-01: #7e88c3;
+  --light-blue-02: #888eb0;
+
+  --light-blue-03: #dfe3fa;
+  --light-blue-03-v2: #dfe3fa;
+  --light-blue-03-v3: #dfe3fa;
+
+  --black-01: #0c0e16;
+  --black-01-v1: #0c0e16;
+  --black-01-v2: #0c0e16;
+
+  --white: #eeeeee;
+  --white-v1: #ffffff;
+
+  --box-shadow-v1: 0 10px 20px rgba(72, 84, 159, 0.25);
+
+  --toastify-toast-background: #ffffff;
+}
+
+[data-theme='dark'] {
+  --light-grey: #252945;
+  --light-blue-01: #dfe3fa;
+  --light-blue-02: #dfe3fa;
+
+  --light-blue-03: #ffffff;
+  --light-blue-03-v2: #1e2139;
+  --light-blue-03-v3: #494e6e;
+
+  --black-01: #1e2139;
+  --black-01-v1: #ffffff;
+  --black-01-v2: #494e6e;
+
+  --white: #141625;
+  --white-v1: #1e2139;
+
+  --box-shadow-v1: 0 10px 40px rgba(0, 0, 0, 0.25);
+
+  --toastify-toast-background: #1e2139;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+html {
+  font-size: 62.5%;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+
+  @include mixins.respond(tablet-sm) {
+    font-size: 41.7%;
+  }
+}
+
+body {
+  margin: 0 auto;
+  max-width: 144rem;
+  min-height: 100vh;
+  font-family: 'League Spartan', sans-serif;
+  font-weight: 500;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    --light-grey: #252945;
+    --light-blue-01: #dfe3fa;
+    --light-blue-02: #dfe3fa;
+
+    --light-blue-03: #ffffff;
+    --light-blue-03-v2: #1e2139;
+    --light-blue-03-v3: #494e6e;
+
+    --black-01: #1e2139;
+    --black-01-v1: #ffffff;
+    --black-01-v2: #494e6e;
+
+    --white: #141625;
+    --white-v1: #1e2139;
+
+    --box-shadow-v1: 0 10px 40px rgba(0, 0, 0, 0.25);
+
+    --toastify-toast-background: #1e2139;
+  }
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+select:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--white-v1) inset !important;
+  -webkit-text-fill-color: var(--black-01-v1) !important;
+}
+
+.error {
+  color: crimson;
+  font-weight: 500;
+}
+
+button {
+  cursor: pointer;
+  background-color: var(--light-blue-03);
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: unset;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.Toastify__toast-body {
+  font-size: 1.6rem;
+  font-family: 'League Spartan', sans-serif;
+  color: var(--light-blue-02);
+}
+
+.Toastify__toast {
+  background-color: var(--toastify-toast-background);
+}

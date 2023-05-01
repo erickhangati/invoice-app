@@ -1,0 +1,108 @@
+.form {
+  & h1 {
+    color: var(--black-01-v1);
+    font-size: 2.4rem;
+    letter-spacing: -0.5px;
+    margin-bottom: 4.6rem;
+
+    & span {
+      color: var(--light-blue-02);
+    }
+  }
+
+  & h2 {
+    font-size: 1.5rem;
+    color: var(--purple-01);
+  }
+
+  & h3 {
+    font-size: 1.8rem;
+    letter-spacing: -0.38px;
+    color: #777f98;
+  }
+
+  &-column,
+  &-row {
+    display: flex;
+    gap: 2.4rem;
+  }
+
+  &-column {
+    flex-direction: column;
+    margin-bottom: 5rem;
+
+    &__labels {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      & span {
+        font-size: 1.2rem;
+        color: var(--orange-01);
+      }
+    }
+  }
+
+  &-buttons {
+    padding: 3.1rem 0;
+
+    &,
+    &__save {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.8rem;
+    }
+
+    &.form-buttons--edit {
+      justify-content: end;
+    }
+  }
+
+  &-errors {
+    font-size: 1.4rem;
+    color: var(--orange-01);
+  }
+}
+
+.item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+
+  &__item,
+  &__header {
+    display: grid;
+    grid-template-columns: 2fr 0.6fr 0.7fr 0.8fr 0.12fr;
+    column-gap: 1.6rem;
+    align-items: center;
+  }
+
+  &__item {
+    & span {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.25px;
+
+      color: var(--light-blue-02);
+    }
+
+    & svg {
+      cursor: pointer;
+      transition: all 0.3s ease-in-out;
+
+      &:hover {
+        fill: var(--orange-01);
+      }
+    }
+  }
+
+  &__header {
+    & span {
+      font-size: 1.3rem;
+      font-weight: 500;
+      letter-spacing: -0.1px;
+      color: var(--light-blue-01);
+    }
+  }
+}

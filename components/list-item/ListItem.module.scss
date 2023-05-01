@@ -1,0 +1,111 @@
+@use '../../styles/mixins.scss' as mixins;
+
+.list-item {
+  padding: 2.8rem 3.2rem;
+  border-radius: 0.8rem;
+  box-shadow: 0 10px 10px -10px rgba(72, 84, 159, 0.104);
+  background-color: var(--white-v1);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.5s ease;
+
+  display: grid;
+  grid-template-columns: 0.6fr 1fr 1fr 1.2fr 1fr 0.8rem;
+  align-items: center;
+  column-gap: 2rem;
+
+  &:hover {
+    border: 1px solid var(--purple-01);
+  }
+
+  &--li:not(:last-child) {
+    margin-bottom: 2rem;
+  }
+
+  @include mixins.respond(phone) {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 2rem;
+  }
+
+  &__id {
+    font-size: 1.5rem;
+    letter-spacing: -0.25px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+
+    @include mixins.respond(phone) {
+      font-size: 2.4rem;
+    }
+
+    &--hash {
+      color: var(--light-blue-01-v1);
+    }
+
+    &--label {
+      color: var(--black-01-v1);
+    }
+  }
+
+  &__date,
+  &__client {
+    font-size: 1.3rem;
+    letter-spacing: -0.1px;
+    font-weight: 500;
+    color: var(--light-blue-01);
+
+    @include mixins.respond(phone) {
+      font-size: 2.2rem;
+    }
+  }
+
+  &__client {
+    @include mixins.respond(phone) {
+      grid-column: 2 / 3;
+      justify-self: end;
+    }
+  }
+
+  &__date {
+    @include mixins.respond(phone) {
+      grid-column: 1 / 2;
+      grid-row: 2 / 3;
+    }
+  }
+
+  &__amount,
+  &__status {
+    justify-self: end;
+  }
+
+  &__status {
+    @include mixins.respond(phone) {
+      width: fit-content;
+      grid-column: 2 / 3;
+      grid-row: 2 / span 2;
+      align-self: end;
+    }
+  }
+
+  &__amount {
+    font-size: 1.5rem;
+    letter-spacing: -0.25px;
+    font-weight: 700;
+    color: var(--light-blue-01);
+
+    @include mixins.respond(phone) {
+      font-size: 2.4rem;
+      justify-self: start;
+      grid-column: 1 / 2;
+      grid-row: 3 / 4;
+    }
+  }
+
+  &__icon {
+    justify-self: end;
+
+    @include mixins.respond(phone) {
+      display: none;
+    }
+  }
+}

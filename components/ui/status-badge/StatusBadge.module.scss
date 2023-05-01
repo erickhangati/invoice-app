@@ -1,0 +1,58 @@
+@use '../../../styles/mixins.scss' as mixins;
+
+.status-badge {
+  width: 100%;
+  padding: 1.4rem 1.8rem;
+  border-radius: 0.6rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+
+  & span {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.25px;
+
+    @include mixins.respond(phone) {
+      font-size: 2.4rem;
+    }
+  }
+
+  &--paid {
+    background-color: rgba(51, 214, 160, 0.15);
+  }
+
+  &__bullet--paid {
+    fill: #33d69f;
+  }
+
+  &__label--paid {
+    color: #33d69f;
+  }
+
+  &--pending {
+    background-color: rgba(255, 145, 0, 0.15);
+  }
+
+  &__bullet--pending {
+    fill: #ff8f00;
+  }
+
+  &__label--pending {
+    color: #ff8f00;
+  }
+
+  &--draft {
+    background-color: rgba(55, 59, 83, 0.15);
+  }
+
+  &__bullet--draft {
+    fill: var(--black-03);
+  }
+
+  &__label--draft {
+    color: var(--black-03);
+  }
+}
