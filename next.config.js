@@ -19,7 +19,7 @@ module.exports = (phase) => {
       mongodb_username: 'ekhangati',
       mongodb_password: 'SMxHvXzaZ5hAQzYl',
       mongodb_cluster: 'test-field',
-      mongodb_database: 'invoice-app',
+      mongodb_database: 'invoice-app-dev',
     },
   };
 };
