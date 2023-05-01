@@ -14,7 +14,7 @@ It is a fullstack simple invoice app that can create invoices and edit them.
 
 1. HTML
 2. CSS (Grid, Flexbox, SASS, BEM)
-3. NextJS
+3. NextJS, TypeScript
 4. MongoDB
 
 ## Live link to the Arch Studio Multi-Page Website
