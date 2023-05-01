@@ -10,14 +10,9 @@ import { InvoiceValues, FilteredInvoiceValues } from '../data/form-data';
 
 interface Props {
   data: FilteredInvoiceValues[];
-  error: string;
 }
 
-const HomePage: React.FC<Props> = ({ data, error }) => {
-  if (error) {
-    return <NoData heading={error} />;
-  }
-
+const HomePage: React.FC<Props> = ({ data }) => {
   const [filteredData, setFilteredData] = useState(data);
   const [showNewInvoice, setShowNewInvoice] = useState(false);
 
@@ -65,16 +60,18 @@ const HomePage: React.FC<Props> = ({ data, error }) => {
   };
 
   return (
-    <AnimatePresence>
-      {showNewInvoice && (
-        <FormModal formModalHandler={formModalHandler} key={Math.random()}>
-          <InvoiceForm
-            formModalHandler={formModalHandler}
-            updateFilteredData={updateFilteredData}
-            key={Math.random()}
-          />
-        </FormModal>
-      )}
+    <>
+      <AnimatePresence>
+        {showNewInvoice && (
+          <FormModal formModalHandler={formModalHandler} key={Math.random()}>
+            <InvoiceForm
+              formModalHandler={formModalHandler}
+              updateFilteredData={updateFilteredData}
+              key={Math.random()}
+            />
+          </FormModal>
+        )}
+      </AnimatePresence>
 
       <FilterHeader
         invoiceNum={filteredData.length}
@@ -88,37 +85,27 @@ const HomePage: React.FC<Props> = ({ data, error }) => {
           text='Create an invoice by clicking the New button and get started'
         />
       )}
-    </AnimatePresence>
+    </>
   );
 };
 
 export const getStaticProps = async () => {
-  try {
-    const response = await fetch(`${process.env.domain}/api/invoice`);
+  const response = await fetch(`${process.env.domain}/api/invoice`);
+  const data = await response.json();
+  const filteredData = data.results.map((item: InvoiceValues) => ({
+    id: item.id,
+    paymentDue: item.paymentDue,
+    clientName: item.clientName,
+    total: item.total,
+    status: item.status,
+  }));
 
-    const data = await response.json();
-    const filteredData = data.results.map((item: InvoiceValues) => ({
-      id: item.id,
-      paymentDue: item.paymentDue,
-      clientName: item.clientName,
-      total: item.total,
-      status: item.status,
-    }));
-
-    return {
-      props: {
-        data: filteredData,
-        error: null,
-      },
-    };
-  } catch (error) {
-    return {
-      props: {
-        data: null,
-        error: 'Failed to fetch data!',
-      },
-    };
-  }
+  return {
+    props: {
+      data: filteredData,
+      error: null,
+    },
+  };
 };
 
 export default HomePage;

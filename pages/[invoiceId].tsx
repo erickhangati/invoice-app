@@ -152,23 +152,16 @@ interface MyContent {
 
 export const getStaticProps = async (context: MyContent) => {
   const { invoiceId } = context.params;
+  const response = await fetch(
+    `${process.env.domain}/api/invoice/${invoiceId}`
+  );
+  const data = await response.json();
 
-  try {
-    const response = await fetch(`${process.env.domain}/${invoiceId}`);
-    const data = await response.json();
-
-    return {
-      props: {
-        filteredData: data.results,
-        error: null,
-      },
-    };
-  } catch (error) {
-    return {
-      props: null,
-      error: 'Could not fetch data!',
-    };
-  }
+  return {
+    props: {
+      filteredData: data.results,
+    },
+  };
 };
 
 export const getStaticPaths = async () => {
