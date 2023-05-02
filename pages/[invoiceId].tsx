@@ -14,6 +14,7 @@ import DeleteItem from '../components/delete-item/DeleteItem';
 import InvoiceDetails from '../components/invoice-details/InvoiceDetails';
 import { InvoiceValues } from '../data/form-data';
 import NoData from '../components/no-data/NoData';
+import { getConnection } from '../data/db';
 
 interface Props {
   filteredData: InvoiceValues;
@@ -157,22 +158,54 @@ interface MyContent {
 
 export const getStaticProps = async (context: MyContent) => {
   const { invoiceId } = context.params;
-  const response = await fetch(
-    `${process.env.DOMAIN}/api/invoice/${invoiceId}`
-  );
-  const data = await response.json();
+  const { client, invoiceCollection } = await getConnection();
+  const results = await invoiceCollection.findOne({ id: invoiceId });
+
+  const filteredData = {
+    _id: results?._id.toString(),
+    id: results?.id,
+    createdAt: results?.createdAt,
+    paymentDue: results?.paymentDue,
+    description: results?.description,
+    paymentTerms: results?.paymentTerms,
+    clientName: results?.clientName,
+    clientEmail: results?.clientEmail,
+    status: results?.status,
+    senderAddress: {
+      street: results?.senderAddress.street,
+      city: results?.senderAddress.city,
+      postCode: results?.senderAddress.postCode,
+      country: results?.senderAddress.country,
+    },
+    clientAddress: {
+      street: results?.clientAddress.street,
+      city: results?.clientAddress.city,
+      postCode: results?.clientAddress.postCode,
+      country: results?.clientAddress.country,
+    },
+    items: results?.items.map((item: any) => ({
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      total: item.total,
+    })),
+    total: results?.total,
+  };
 
   return {
     props: {
-      filteredData: data.results,
+      filteredData,
     },
   };
 };
 
 export const getStaticPaths = async () => {
-  const response = await fetch(`${process.env.DOMAIN}/api/invoice`);
-  const data = await response.json();
-  const paths = data.results.map((item: InvoiceValues) => ({
+  const { invoiceCollection, client } = await getConnection();
+  const res = await invoiceCollection
+    .find({})
+    .sort({ createdAt: -1 })
+    .toArray();
+  const paths = res.map((item) => ({
     params: { invoiceId: item.id },
   }));
 
@@ -181,5 +214,32 @@ export const getStaticPaths = async () => {
     fallback: true,
   };
 };
+
+// export const getStaticProps = async (context: MyContent) => {
+//   const { invoiceId } = context.params;
+//   const response = await fetch(
+//     `${process.env.DOMAIN}/api/invoice/${invoiceId}`
+//   );
+//   const data = await response.json();
+
+//   return {
+//     props: {
+//       filteredData: data.results,
+//     },
+//   };
+// };
+
+// export const getStaticPaths = async () => {
+//   const response = await fetch(`${process.env.DOMAIN}/api/invoice`);
+//   const data = await response.json();
+//   const paths = data.results.map((item: InvoiceValues) => ({
+//     params: { invoiceId: item.id },
+//   }));
+
+//   return {
+//     paths,
+//     fallback: true,
+//   };
+// };
 
 export default InvoicePage;

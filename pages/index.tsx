@@ -6,7 +6,8 @@ import List from '../components/list/List';
 import FormModal from '../components/ui/modal/FormModal';
 import InvoiceForm from '../components/ui/form/InvoiceForm';
 import NoData from '../components/no-data/NoData';
-import { InvoiceValues, FilteredInvoiceValues } from '../data/form-data';
+import { FilteredInvoiceValues } from '../data/form-data';
+import { getConnection } from '../data/db';
 
 interface Props {
   data: FilteredInvoiceValues[];
@@ -93,10 +94,33 @@ const HomePage: React.FC<Props> = ({ data }) => {
   );
 };
 
+// export const getStaticProps = async () => {
+//   const response = await fetch(`${process.env.DOMAIN}/api/invoice`);
+//   const data = await response.json();
+//   const filteredData = data.results.map((item: InvoiceValues) => ({
+//     id: item.id,
+//     paymentDue: item.paymentDue,
+//     clientName: item.clientName,
+//     total: item.total,
+//     status: item.status,
+//   }));
+
+//   return {
+//     props: {
+//       data: filteredData,
+//       error: null,
+//     },
+//   };
+// };
+
 export const getStaticProps = async () => {
-  const response = await fetch(`${process.env.DOMAIN}/api/invoice`);
-  const data = await response.json();
-  const filteredData = data.results.map((item: InvoiceValues) => ({
+  const { invoiceCollection, client } = await getConnection();
+  const res = await invoiceCollection
+    .find({})
+    .sort({ createdAt: -1 })
+    .toArray();
+
+  const data = res.map((item) => ({
     id: item.id,
     paymentDue: item.paymentDue,
     clientName: item.clientName,
@@ -104,10 +128,11 @@ export const getStaticProps = async () => {
     status: item.status,
   }));
 
+  client.close();
+
   return {
     props: {
-      data: filteredData,
-      error: null,
+      data,
     },
   };
 };
