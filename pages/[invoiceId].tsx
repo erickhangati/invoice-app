@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import NProgress from 'nprogress';
+import { AnimatePresence } from 'framer-motion';
 
 import BackButton from '../components/ui/buttons/back-button/BackButton';
 import EditHeader from '../components/edit-header/EditHeader';
@@ -12,13 +13,17 @@ import InvoiceForm from '../components/ui/form/InvoiceForm';
 import DeleteItem from '../components/delete-item/DeleteItem';
 import InvoiceDetails from '../components/invoice-details/InvoiceDetails';
 import { InvoiceValues } from '../data/form-data';
-import { AnimatePresence } from 'framer-motion';
+import NoData from '../components/no-data/NoData';
 
 interface Props {
   filteredData: InvoiceValues;
 }
 
 const InvoicePage: React.FC<Props> = ({ filteredData }) => {
+  if (!filteredData) {
+    return <NoData heading='Failed to fetch data!' />;
+  }
+
   const [invoice, setInvoice] = useState(filteredData);
   const [showEditInvoice, setShowEditInvoice] = useState(false);
   const [showDelete, setshowDelete] = useState(false);
@@ -150,31 +155,31 @@ interface MyContent {
   };
 }
 
-export const getStaticProps = async (context: MyContent) => {
-  const { invoiceId } = context.params;
-  const response = await fetch(
-    `${process.env.domain}/api/invoice/${invoiceId}`
-  );
-  const data = await response.json();
+// export const getStaticProps = async (context: MyContent) => {
+//   const { invoiceId } = context.params;
+//   const response = await fetch(
+//     `${process.env.domain}/api/invoice/${invoiceId}`
+//   );
+//   const data = await response.json();
 
-  return {
-    props: {
-      filteredData: data.results,
-    },
-  };
-};
+//   return {
+//     props: {
+//       filteredData: data.results,
+//     },
+//   };
+// };
 
-export const getStaticPaths = async () => {
-  const response = await fetch(`${process.env.domain}/api/invoice`);
-  const data = await response.json();
-  const paths = data.results.map((item: InvoiceValues) => ({
-    params: { invoiceId: item.id },
-  }));
+// export const getStaticPaths = async () => {
+//   const response = await fetch(`${process.env.domain}/api/invoice`);
+//   const data = await response.json();
+//   const paths = data.results.map((item: InvoiceValues) => ({
+//     params: { invoiceId: item.id },
+//   }));
 
-  return {
-    paths,
-    fallback: true,
-  };
-};
+//   return {
+//     paths,
+//     fallback: true,
+//   };
+// };
 
 export default InvoicePage;
