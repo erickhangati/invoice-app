@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import NProgress from 'nprogress';
 import { AnimatePresence } from 'framer-motion';
+import Head from 'next/head';
 
 import BackButton from '../components/ui/buttons/back-button/BackButton';
 import EditHeader from '../components/edit-header/EditHeader';
@@ -109,6 +110,13 @@ const InvoicePage: React.FC<Props> = ({ filteredData }) => {
 
   return (
     <>
+      <Head>
+        <title>{`Invoice No. ${invoice.id}`}</title>
+        <meta
+          name='description'
+          content={`Details for Invoice No. ${invoice.id}`}
+        />
+      </Head>
       <AnimatePresence>
         {showEditInvoice && (
           <FormModal formModalHandler={formModalHandler}>
@@ -160,6 +168,13 @@ export const getStaticProps = async (context: MyContent) => {
   const { invoiceId } = context.params;
   const { client, invoiceCollection } = await getConnection();
   const results = await invoiceCollection.findOne({ id: invoiceId });
+  client.close();
+
+  if (!results) {
+    return {
+      notFound: true,
+    };
+  }
 
   const filteredData = {
     _id: results?._id.toString(),

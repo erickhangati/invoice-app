@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
+import Head from 'next/head';
 
 import FilterHeader from '../components/filter-header/FilterHeader';
 import List from '../components/list/List';
@@ -66,6 +67,13 @@ const HomePage: React.FC<Props> = ({ data }) => {
 
   return (
     <>
+      <Head>
+        <title>Home | Invoice List</title>
+        <meta
+          name='description'
+          content='Find the list of invoices generated'
+        />
+      </Head>
       <AnimatePresence>
         {showNewInvoice && (
           <FormModal formModalHandler={formModalHandler} key={Math.random()}>
@@ -119,6 +127,13 @@ export const getStaticProps = async () => {
     .find({})
     .sort({ createdAt: -1 })
     .toArray();
+  client.close();
+
+  if (!res) {
+    return {
+      notFound: true,
+    };
+  }
 
   const data = res.map((item) => ({
     id: item.id,
@@ -128,12 +143,11 @@ export const getStaticProps = async () => {
     status: item.status,
   }));
 
-  client.close();
-
   return {
     props: {
       data,
     },
+    revalidate: 5,
   };
 };
 
