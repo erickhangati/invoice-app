@@ -4,22 +4,22 @@ module.exports = (phase) => {
   if (phase === PHASE_DEVELOPMENT_SERVER) {
     return {
       env: {
-        domain: 'http://localhost:3000',
-        mongodb_username: 'ekhangati',
-        mongodb_password: 'SMxHvXzaZ5hAQzYl',
-        mongodb_cluster: 'test-field',
-        mongodb_database: 'invoice-app-dev',
+        DOMAIN: 'http://localhost:3000',
+        MONGODB_USERNAME: 'ekhangati',
+        MONGODB_PASSWORD: 'SMxHvXzaZ5hAQzYl',
+        MONGODB_CLUSTER: 'test-field',
+        MONGODB_DATABASE: 'invoice-app-dev',
       },
     };
   }
 
   return {
     env: {
-      domain: 'https://eric-invoice-app.vercel.app',
-      mongodb_username: 'ekhangati',
-      mongodb_password: 'SMxHvXzaZ5hAQzYl',
-      mongodb_cluster: 'test-field',
-      mongodb_database: 'invoice-app-dev',
+      DOMAIN: 'https://eric-invoice-app.vercel.app',
+      MONGODB_USERNAME: 'ekhangati',
+      MONGODB_PASSWORD: 'SMxHvXzaZ5hAQzYl',
+      MONGODB_CLUSTER: 'test-field',
+      MONGODB_DATABASE: 'invoice-app-dev',
     },
   };
 };

@@ -155,31 +155,31 @@ interface MyContent {
   };
 }
 
-// export const getStaticProps = async (context: MyContent) => {
-//   const { invoiceId } = context.params;
-//   const response = await fetch(
-//     `${process.env.domain}/api/invoice/${invoiceId}`
-//   );
-//   const data = await response.json();
+export const getStaticProps = async (context: MyContent) => {
+  const { invoiceId } = context.params;
+  const response = await fetch(
+    `${process.env.DOMAIN}/api/invoice/${invoiceId}`
+  );
+  const data = await response.json();
 
-//   return {
-//     props: {
-//       filteredData: data.results,
-//     },
-//   };
-// };
+  return {
+    props: {
+      filteredData: data.results,
+    },
+  };
+};
 
-// export const getStaticPaths = async () => {
-//   const response = await fetch(`${process.env.domain}/api/invoice`);
-//   const data = await response.json();
-//   const paths = data.results.map((item: InvoiceValues) => ({
-//     params: { invoiceId: item.id },
-//   }));
+export const getStaticPaths = async () => {
+  const response = await fetch(`${process.env.DOMAIN}/api/invoice`);
+  const data = await response.json();
+  const paths = data.results.map((item: InvoiceValues) => ({
+    params: { invoiceId: item.id },
+  }));
 
-//   return {
-//     paths,
-//     fallback: true,
-//   };
-// };
+  return {
+    paths,
+    fallback: true,
+  };
+};
 
 export default InvoicePage;

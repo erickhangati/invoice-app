@@ -93,23 +93,23 @@ const HomePage: React.FC<Props> = ({ data }) => {
   );
 };
 
-// export const getStaticProps = async () => {
-//   const response = await fetch(`${process.env.domain}/api/invoice`);
-//   const data = await response.json();
-//   const filteredData = data.results.map((item: InvoiceValues) => ({
-//     id: item.id,
-//     paymentDue: item.paymentDue,
-//     clientName: item.clientName,
-//     total: item.total,
-//     status: item.status,
-//   }));
+export const getStaticProps = async () => {
+  const response = await fetch(`${process.env.DOMAIN}/api/invoice`);
+  const data = await response.json();
+  const filteredData = data.results.map((item: InvoiceValues) => ({
+    id: item.id,
+    paymentDue: item.paymentDue,
+    clientName: item.clientName,
+    total: item.total,
+    status: item.status,
+  }));
 
-//   return {
-//     props: {
-//       data: filteredData,
-//       error: null,
-//     },
-//   };
-// };
+  return {
+    props: {
+      data: filteredData,
+      error: null,
+    },
+  };
+};
 
 export default HomePage;
