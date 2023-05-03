@@ -1,69 +1,55 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Head from 'next/head';
 
+import { InvoiceContext } from '../context/InvoiceContext';
 import FilterHeader from '../components/filter-header/FilterHeader';
 import List from '../components/list/List';
 import FormModal from '../components/ui/modal/FormModal';
 import InvoiceForm from '../components/ui/form/InvoiceForm';
 import NoData from '../components/no-data/NoData';
-import { FilteredInvoiceValues } from '../data/form-data';
+import { InvoiceValues } from '../data/form-data';
 import { getConnection } from '../data/db';
 
 interface Props {
-  data: FilteredInvoiceValues[];
+  data: InvoiceValues[];
 }
 
 const HomePage: React.FC<Props> = ({ data }) => {
-  if (!data) {
-    return <NoData heading='Failed to fetch data!' />;
-  }
-
-  const [filteredData, setFilteredData] = useState(data);
-  const [showNewInvoice, setShowNewInvoice] = useState(false);
+  const [formModal, setFormModal] = useState(false);
+  const { invoices, setInvoices, setFilteredInvoice } =
+    useContext(InvoiceContext);
 
   useEffect(() => {
-    if (showNewInvoice) {
+    // LOAD DATA TO APP STATE
+    if (data && invoices.length === 0) {
+      setInvoices(() => data);
+    }
+
+    // CLEAR FILTERED INVOICE
+    setFilteredInvoice(null);
+
+    // HIDE VERTICAL SCROLL IF MODAL DISPLAY
+    if (formModal) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
     }
-  }, [showNewInvoice]);
+  }, [formModal, data]);
 
-  const filterHandler = (filter: string) => {
-    if (filter === 'All') {
-      setFilteredData(() => data);
-      return;
-    }
-
-    if (filter === 'Paid') {
-      const paid = data.filter((item) => item.status === 'paid');
-      setFilteredData(() => paid);
-      return;
-    }
-
-    if (filter === 'Pending') {
-      const pending = data.filter((item) => item.status === 'pending');
-      setFilteredData(() => pending);
-      return;
-    }
-
-    if (filter === 'Draft') {
-      const draft = data.filter((item) => item.status === 'draft');
-      setFilteredData(() => draft);
-      return;
-    }
+  // FORM MODAL HANDLER
+  const modalOpenHandler = () => {
+    setFormModal(() => true);
   };
 
-  const formModalHandler = () => {
-    setShowNewInvoice(!showNewInvoice);
+  const modalCloseHandler = () => {
+    setFormModal(() => false);
   };
 
-  const updateFilteredData = (newItem: FilteredInvoiceValues) => {
-    const copiedData = filteredData.slice();
-    copiedData.unshift(newItem);
-    setFilteredData(copiedData);
-  };
+  // IF NO DATA DISPLAY
+  if (!invoices) {
+    return <NoData heading='Failed to fetch data!' />;
+  }
 
   return (
     <>
@@ -75,24 +61,22 @@ const HomePage: React.FC<Props> = ({ data }) => {
         />
       </Head>
       <AnimatePresence>
-        {showNewInvoice && (
-          <FormModal formModalHandler={formModalHandler} key={Math.random()}>
+        {formModal && (
+          <FormModal key={Math.random()} modalCloseHandler={modalCloseHandler}>
             <InvoiceForm
-              formModalHandler={formModalHandler}
-              updateFilteredData={updateFilteredData}
               key={Math.random()}
+              modalCloseHandler={modalCloseHandler}
             />
           </FormModal>
         )}
       </AnimatePresence>
 
       <FilterHeader
-        invoiceNum={filteredData.length}
-        filterHandler={filterHandler}
-        formModalHandler={formModalHandler}
+        invoiceNum={invoices.length}
+        modalOpenHandler={modalOpenHandler}
       />
-      {filteredData.length !== 0 && <List data={filteredData} />}
-      {filteredData.length === 0 && (
+      {invoices.length !== 0 && <List />}
+      {invoices.length === 0 && (
         <NoData
           heading='There is nothing here'
           text='Create an invoice by clicking the New button and get started'
@@ -146,6 +130,7 @@ export const getStaticProps = async () => {
   return {
     props: {
       data,
+      data2: data,
     },
     revalidate: 5,
   };

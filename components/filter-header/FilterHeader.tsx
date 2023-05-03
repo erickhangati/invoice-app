@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+
 import Filter from '../ui/filter/Filter';
 import Button1 from '../ui/buttons/button-1/Button1';
 
@@ -6,15 +7,10 @@ import styles from './FilterHeader.module.scss';
 
 interface Props {
   invoiceNum: number;
-  filterHandler: (filter: string) => void;
-  formModalHandler: () => void;
+  modalOpenHandler: () => void;
 }
 
-const FilterHeader: React.FC<Props> = ({
-  invoiceNum,
-  filterHandler,
-  formModalHandler,
-}) => {
+const FilterHeader: React.FC<Props> = ({ invoiceNum, modalOpenHandler }) => {
   const [screenWidth, setScreenWidth] = useState(0);
 
   useEffect(() => {
@@ -34,13 +30,8 @@ const FilterHeader: React.FC<Props> = ({
               }`}
         </span>
       </div>
-      {invoiceNum !== 0 && (
-        <Filter
-          className={styles['filter-header__filter']}
-          filterHandler={filterHandler}
-        />
-      )}
-      <Button1 modalHandler={formModalHandler}>
+      <Filter className={styles['filter-header__filter']} />
+      <Button1 modalOpenHandler={modalOpenHandler}>
         {screenWidth > 578 ? 'New Invoice' : 'New'}
       </Button1>
     </div>

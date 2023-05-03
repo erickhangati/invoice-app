@@ -3,6 +3,7 @@ import { ToastContainer } from 'react-toastify';
 import Router from 'next/router';
 import NProgress from 'nprogress';
 
+import InvoiceProvider from '../context/InvoiceContext';
 import Layout from '../components/layout/Layout';
 import 'react-toastify/dist/ReactToastify.css';
 import '../styles/nprogress.css';
@@ -24,9 +25,11 @@ Router.events.on('routeChangeError', () => {
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <Layout>
-      <Component {...pageProps} />
-      <ToastContainer />
-    </Layout>
+    <InvoiceProvider>
+      <Layout>
+        <Component {...pageProps} />
+        <ToastContainer />
+      </Layout>
+    </InvoiceProvider>
   );
 }

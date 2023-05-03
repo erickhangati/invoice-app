@@ -9,6 +9,7 @@ interface Props {
   children: ReactNode;
   isUpdating?: boolean;
   deleteModalHandler: () => void;
+  modalCloseHandler: () => void;
 }
 
 const Modal: React.FC<Props> = ({
@@ -20,7 +21,7 @@ const Modal: React.FC<Props> = ({
     <>
       {ReactDOM.createPortal(
         <Backdrop
-          deleteModalHandler={isUpdating ? () => {} : deleteModalHandler}
+          modalCloseHandler={isUpdating ? () => {} : deleteModalHandler}
           className={styles.backdrop}
         />,
         document.getElementById('backdrop')! as HTMLDivElement

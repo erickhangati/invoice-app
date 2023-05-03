@@ -1,20 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ListItem from '../list-item/ListItem';
+import { InvoiceContext } from '../../context/InvoiceContext';
 
-interface Props {
-  data: {
-    id: string;
-    paymentDue: string;
-    clientName: string;
-    total: number;
-    status: string;
-  }[];
-}
+const List = () => {
+  const { invoices } = useContext(InvoiceContext);
 
-const List: React.FC<Props> = ({ data }) => {
   return (
     <ul>
-      {data.map((item, index) => (
+      {invoices.map((item) => (
         <ListItem
           key={Math.random()}
           id={item.id}

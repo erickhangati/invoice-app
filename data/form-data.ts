@@ -23,7 +23,25 @@ export interface FilteredInvoiceValues {
   paymentDue: string;
   clientName: string;
   total: number;
-  status: string;
+  _id?: string;
+  status?: string;
+  createdAt?: string;
+  description?: string;
+  senderAddress?: {
+    street: string;
+    city: string;
+    postCode: string;
+    country: string;
+  };
+  clientEmail?: string;
+  clientAddress?: {
+    street: string;
+    city: string;
+    postCode: string;
+    country: string;
+  };
+  paymentTerms?: string;
+  items?: { name: string; quantity: string; price: string; total: number }[];
 }
 
 export interface InvoiceValues {
@@ -47,8 +65,13 @@ export interface InvoiceValues {
     postCode: string;
     country: string;
   };
-  paymentTerms: string;
-  items: { name: string; quantity: string; price: string; total: number }[];
+  paymentTerms: string | number;
+  items: {
+    name: string;
+    quantity: string | number;
+    price: string | number;
+    total: number;
+  }[];
   total?: number;
 }
 

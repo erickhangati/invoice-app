@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Formik, Form, FieldArray } from 'formik';
 import { FormikHelpers } from 'formik';
 import { toast } from 'react-toastify';
 
+import { InvoiceContext } from '../../../context/InvoiceContext';
 import FormControl from './form-components/FormControl';
 import Button2 from '../buttons/button-2/Button2';
 import Button3 from '../buttons/button-3/Button3';
@@ -17,27 +18,25 @@ import {
   validationSchema,
   getPaymentDue,
   generateInvoiceNumber,
-  FilteredInvoiceValues,
 } from '../../../data/form-data';
 
 import styles from './InvoiceForm.module.scss';
 
 interface Props {
-  data?: InvoiceValues;
-  setData?: (newData: InvoiceValues) => void;
-  formModalHandler: () => void;
-  updateFilteredData?: (newData: FilteredInvoiceValues) => void;
+  modalCloseHandler: () => void;
 }
 
-const InvoiceForm: React.FC<Props> = ({
-  data,
-  setData,
-  formModalHandler,
-  updateFilteredData,
-}) => {
+const InvoiceForm: React.FC<Props> = ({ modalCloseHandler }) => {
   const [isDraft, setIsDraft] = useState(false);
-  const [isEdit, setisEdit] = useState(data ? true : false);
-  const [loadedData, setLoadedData] = useState(data);
+  const [isEdit, setisEdit] = useState(false);
+  const { invoices, setInvoices, filteredInvoice, setFilteredInvoice } =
+    useContext(InvoiceContext);
+
+  useEffect(() => {
+    if (filteredInvoice) {
+      setisEdit(() => true);
+    }
+  }, [filteredInvoice]);
 
   const setDraft = () => {
     setIsDraft(() => true);
@@ -51,16 +50,16 @@ const InvoiceForm: React.FC<Props> = ({
     values: InvoiceValues,
     { setSubmitting, resetForm }: FormikHelpers<InvoiceValues>
   ) => {
+    // ACCUMULATED TOTAL
+    const total = values.items.reduce(
+      (acc, currValue) => acc + currValue.total,
+      0
+    );
+
+    // PAYMENT DUE
+    const paymentDue = getPaymentDue(values.createdAt, +values.paymentTerms);
+
     if (!isEdit) {
-      // ACCUMULATED TOTAL
-      const total = values.items.reduce(
-        (acc, currValue) => acc + currValue.total,
-        0
-      );
-
-      // PAYMENT DUE
-      const paymentDue = getPaymentDue(values.createdAt, +values.paymentTerms);
-
       // TRANSFORMED DATA
       const transformedData = {
         ...values,
@@ -88,30 +87,20 @@ const InvoiceForm: React.FC<Props> = ({
 
       await response.json();
 
-      // FILTERED DATA
-      const filtedData = {
-        id: transformedData.id,
-        paymentDue: transformedData.paymentDue,
-        clientName: transformedData.clientName,
-        total: transformedData.total,
-        status: transformedData.status,
-      };
-
-      if (updateFilteredData) updateFilteredData(filtedData);
+      // UPDATE INVOICES STATE
+      setInvoices((prev) => [transformedData, ...prev]);
 
       // CLEAN UP AFTER SUBMISSION
       setSubmitting(false);
       resetForm();
-      formModalHandler();
+      modalCloseHandler();
       return;
     }
 
-    // PAYMENT DUE
-    const paymentDue = getPaymentDue(values.createdAt, +values.paymentTerms);
-
     const transformedData = {
-      ...loadedData,
+      ...filteredInvoice,
       ...values,
+      total,
       status: 'pending',
       paymentDue,
     };
@@ -133,28 +122,35 @@ const InvoiceForm: React.FC<Props> = ({
 
     await response.json();
 
-    // UPDATE STATE
-    if (setData) setData(transformedData);
+    // UPDATE FILTERED INVOICE STATE
+    setFilteredInvoice(() => transformedData);
+
+    // UPDATE INVOICES STATE
+    const invoiceIndex = invoices.findIndex(
+      (item) => item.id === transformedData.id
+    );
+    const invoicesCopy = [...invoices];
+    invoicesCopy.splice(invoiceIndex, 1, transformedData);
+    setInvoices(() => invoicesCopy);
 
     // CLEAN UP AFTER SUBMISSION
-
     setSubmitting(false);
     resetForm();
-    formModalHandler();
+    modalCloseHandler();
   };
 
   return (
     <div className={styles.form}>
-      {!loadedData && <h1>New Invoice</h1>}
-      {loadedData && (
+      {!filteredInvoice && <h1>New Invoice</h1>}
+      {filteredInvoice && (
         <h1>
           Edit <span>#</span>
-          {loadedData.id}
+          {filteredInvoice.id}
         </h1>
       )}
 
       <Formik
-        initialValues={loadedData || initialValues}
+        initialValues={filteredInvoice || initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
       >
@@ -391,7 +387,9 @@ const InvoiceForm: React.FC<Props> = ({
 
               {!isEdit && (
                 <div className={styles['form-buttons']}>
-                  <Button3 onClick={formModalHandler}>Discard</Button3>
+                  <Button3 type='button' onClick={modalCloseHandler}>
+                    Discard
+                  </Button3>
 
                   <div className={styles['form-buttons__save']}>
                     <Button4
@@ -417,7 +415,9 @@ const InvoiceForm: React.FC<Props> = ({
                   className={`${styles['form-buttons']} ${styles['form-buttons--edit']}`}
                 >
                   <div className={styles['form-buttons__save']}>
-                    <Button3 onClick={formModalHandler}>Cancel</Button3>
+                    <Button3 type='button' onClick={modalCloseHandler}>
+                      Cancel
+                    </Button3>
                     <Button2 type='submit' disabled={formik.isSubmitting}>
                       Save Changes
                     </Button2>

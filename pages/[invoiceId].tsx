@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
@@ -6,6 +6,7 @@ import NProgress from 'nprogress';
 import { AnimatePresence } from 'framer-motion';
 import Head from 'next/head';
 
+import { InvoiceContext } from '../context/InvoiceContext';
 import BackButton from '../components/ui/buttons/back-button/BackButton';
 import EditHeader from '../components/edit-header/EditHeader';
 import FormModal from '../components/ui/modal/FormModal';
@@ -22,28 +23,35 @@ interface Props {
 }
 
 const InvoicePage: React.FC<Props> = ({ filteredData }) => {
-  if (!filteredData) {
-    return <NoData heading='Failed to fetch data!' />;
-  }
-
-  const [invoice, setInvoice] = useState(filteredData);
   const [showEditInvoice, setShowEditInvoice] = useState(false);
   const [showDelete, setshowDelete] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const { invoices, setInvoices, filteredInvoice, setFilteredInvoice } =
+    useContext(InvoiceContext);
 
   const router = useRouter();
 
   useEffect(() => {
+    // UPDATE FILTERED INVOICE
+    if (filteredData && filteredInvoice === null) {
+      setFilteredInvoice(() => filteredData);
+    }
+
+    // HIDE VERTICAL SCROLL ON MODAL DISPLAY
     if (isDeleting || showEditInvoice) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
     }
-  }, [isDeleting, showEditInvoice]);
+  }, [isDeleting, filteredData, showEditInvoice, filteredInvoice]);
 
-  const formModalHandler = () => {
-    setShowEditInvoice((prev) => !prev);
+  const modalOpenHandler = () => {
+    setShowEditInvoice(() => true);
+  };
+
+  const modalCloseHandler = () => {
+    setShowEditInvoice(() => false);
   };
 
   const deleteModalHandler = () => {
@@ -52,79 +60,103 @@ const InvoicePage: React.FC<Props> = ({ filteredData }) => {
   };
 
   const markPaidHandler = async () => {
-    setIsUpdating(() => true);
-    const response = await toast.promise(
-      fetch(`/api/invoice/${invoice.id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: 'paid', objectId: invoice._id }),
-      }),
-      {
-        pending: 'Updating status',
-        success: 'Marked as paid successfully',
-        error: 'Something went wrong',
-      }
-    );
+    if (filteredInvoice && setFilteredInvoice) {
+      setIsUpdating(() => true);
+      const response = await toast.promise(
+        fetch(`/api/invoice/${filteredInvoice.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            status: 'paid',
+            objectId: filteredInvoice._id,
+          }),
+        }),
+        {
+          pending: 'Updating status',
+          success: 'Marked as paid successfully',
+          error: 'Something went wrong',
+        }
+      );
 
-    const result = await response.json();
-    console.log(result);
+      const result = await response.json();
+      console.log(result);
 
-    setInvoice((prev) => ({ ...prev, status: 'paid' }));
-    setIsUpdating(() => false);
+      // UPDATE FILTERED INVOICE STATE
+      const updatedInvoice = { ...filteredInvoice, status: 'paid' };
+      setFilteredInvoice(() => updatedInvoice);
+
+      // UPDATE INVOICES STATE
+      const invoiceIndex = invoices.findIndex(
+        (item) => item.id === filteredInvoice.id
+      );
+      const invoicesCopy = [...invoices];
+      invoicesCopy.splice(invoiceIndex, 1, updatedInvoice);
+      setInvoices(() => invoicesCopy);
+
+      setIsUpdating(() => false);
+    }
   };
 
   const deleteHandler = async () => {
-    setIsUpdating(() => true);
-    const response = await toast.promise(
-      fetch(`/api/invoice/${invoice.id}`, {
-        method: 'DELETE',
-      }),
-      {
-        pending: 'Deleting invoice',
-        success: 'Deleted successfully. Updating...',
-        error: 'Something went wrong',
-      }
-    );
+    if (filteredInvoice) {
+      setIsUpdating(() => true);
+      const response = await toast.promise(
+        fetch(`/api/invoice/${filteredInvoice.id}`, {
+          method: 'DELETE',
+        }),
+        {
+          pending: 'Deleting invoice',
+          success: 'Deleted successfully. Updating...',
+          error: 'Something went wrong',
+        }
+      );
 
-    const result = await response.json();
-    console.log(result);
+      const result = await response.json();
+      console.log(result);
 
-    setshowDelete(() => false);
+      // UPDATE STATE
+      const newInvoices = invoices.filter(
+        (item) => item.id !== filteredInvoice.id
+      );
+      setInvoices(() => newInvoices);
 
-    router.events.on('routeChangeStart', (url: string) => {
-      if (url === '/') {
-        NProgress.remove();
-      }
-    });
+      setshowDelete(() => false);
 
-    setTimeout(() => {
-      router.push('/');
-    }, 2500);
+      router.events.on('routeChangeStart', (url: string) => {
+        if (url === '/') {
+          NProgress.remove();
+        }
+      });
+
+      setTimeout(() => {
+        router.push('/');
+      }, 2500);
+    }
   };
 
-  const setData = (updatedData: InvoiceValues) => {
-    setInvoice(() => updatedData);
-  };
+  if (!filteredInvoice) {
+    return <NoData heading='Failed to fetch data!' />;
+  }
 
   return (
     <>
       <Head>
-        <title>{`Invoice No. ${invoice.id}`}</title>
+        <title>{`Invoice No. ${
+          filteredInvoice ? filteredInvoice.id : ''
+        }`}</title>
         <meta
           name='description'
-          content={`Details for Invoice No. ${invoice.id}`}
+          content={`Details for Invoice No. ${
+            filteredInvoice ? filteredInvoice.id : ''
+          }`}
         />
       </Head>
       <AnimatePresence>
         {showEditInvoice && (
-          <FormModal formModalHandler={formModalHandler}>
-            <InvoiceForm
-              formModalHandler={formModalHandler}
-              data={invoice}
-              setData={setData}
-            />
+          <FormModal modalCloseHandler={modalCloseHandler}>
+            <InvoiceForm modalCloseHandler={modalCloseHandler} />
           </FormModal>
         )}
       </AnimatePresence>
@@ -133,9 +165,10 @@ const InvoicePage: React.FC<Props> = ({ filteredData }) => {
         <DeleteModal
           deleteModalHandler={deleteModalHandler}
           isUpdating={isUpdating}
+          modalCloseHandler={modalCloseHandler}
         >
           <DeleteItem
-            id={invoice.id}
+            id={filteredInvoice ? filteredInvoice.id : ''}
             deleteModalHandler={deleteModalHandler}
             deleteHandler={deleteHandler}
             isUpdating={isUpdating}
@@ -148,12 +181,12 @@ const InvoicePage: React.FC<Props> = ({ filteredData }) => {
       </Link>
       <EditHeader
         isUpdating={isUpdating}
-        status={invoice.status}
-        formModalHandler={formModalHandler}
+        status={filteredInvoice ? filteredInvoice.status : ''}
+        modalOpenHandler={modalOpenHandler}
         deleteModalHandler={deleteModalHandler}
         markPaidHandler={markPaidHandler}
       />
-      <InvoiceDetails invoice={invoice} />
+      <InvoiceDetails />
     </>
   );
 };

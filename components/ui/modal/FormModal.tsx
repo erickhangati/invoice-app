@@ -6,14 +6,14 @@ import FormOverlay from './form-overlay/FormOverlay';
 
 interface Props {
   children: ReactNode;
-  formModalHandler: () => void;
+  modalCloseHandler: () => void;
 }
 
-const Modal: React.FC<Props> = ({ children, formModalHandler }) => {
+const Modal: React.FC<Props> = ({ children, modalCloseHandler }) => {
   return (
     <>
       {ReactDOM.createPortal(
-        <Backdrop formModalHandler={formModalHandler} key={Math.random()} />,
+        <Backdrop key={Math.random()} modalCloseHandler={modalCloseHandler} />,
         document.getElementById('backdrop')! as HTMLDivElement
       )}
       {ReactDOM.createPortal(

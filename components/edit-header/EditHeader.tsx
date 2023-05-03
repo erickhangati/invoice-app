@@ -9,7 +9,7 @@ import styles from './EditHeader.module.scss';
 interface Props {
   isUpdating: boolean;
   status?: string;
-  formModalHandler: () => void;
+  modalOpenHandler: () => void;
   deleteModalHandler: () => void;
   markPaidHandler: () => void;
 }
@@ -17,7 +17,7 @@ interface Props {
 const EditHeader: React.FC<Props> = ({
   isUpdating,
   status,
-  formModalHandler,
+  modalOpenHandler,
   markPaidHandler,
   deleteModalHandler,
 }) => {
@@ -28,7 +28,7 @@ const EditHeader: React.FC<Props> = ({
         <StatusBadge className={styles['status-badge']} status={status} />
       </div>
       <div className={styles['edit-header__buttons']}>
-        <Button3 disabled={isUpdating} onClick={formModalHandler}>
+        <Button3 disabled={isUpdating} onClick={modalOpenHandler}>
           Edit
         </Button3>
         <Button5

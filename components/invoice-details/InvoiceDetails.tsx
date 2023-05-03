@@ -1,13 +1,13 @@
-import React from 'react';
-import { InvoiceValues } from '../../data/form-data';
+import React, { useContext } from 'react';
+import { InvoiceContext } from '../../context/InvoiceContext';
 import styles from './InvoiceDetails.module.scss';
 
-interface Props {
-  invoice: InvoiceValues;
-}
+const InvoiceDetails = () => {
+  const { filteredInvoice } = useContext(InvoiceContext);
 
-const InvoiceDetails: React.FC<Props> = ({ invoice }) => {
-  const getDate = (date: any) => {
+  const getDate = (date: string | undefined) => {
+    if (date === undefined || date === '') return;
+
     const theDate = new Date(date);
     const transformedDate = new Intl.DateTimeFormat('en-us', {
       year: 'numeric',
@@ -17,7 +17,9 @@ const InvoiceDetails: React.FC<Props> = ({ invoice }) => {
     return transformedDate;
   };
 
-  const getAmount = (amount: number) => {
+  const getAmount = (amount: number | undefined) => {
+    if (amount === undefined) return;
+
     const formatedAmount = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'KSh',
@@ -26,26 +28,26 @@ const InvoiceDetails: React.FC<Props> = ({ invoice }) => {
     return formatedAmount;
   };
 
-  const invoiceDate = getDate(invoice.createdAt);
-  const paymentDue = getDate(invoice.paymentDue);
-  const formatedTotal = getAmount(invoice.total ? invoice.total : 0);
+  const invoiceDate = getDate(filteredInvoice?.createdAt);
+  const paymentDue = getDate(filteredInvoice?.paymentDue);
+  const formatedTotal = getAmount(filteredInvoice?.total);
 
   return (
     <div className={styles.invoice}>
       <div className={styles['invoice-header']}>
         <div className={styles['invoice-description']}>
           <p className={styles['invoice-description__id']}>
-            #<span>{invoice.id}</span>
+            #<span>{filteredInvoice?.id}</span>
           </p>
           <p className={styles['invoice-description__title']}>
-            {invoice.description}
+            {filteredInvoice?.description}
           </p>
         </div>
         <div className={styles['invoice-address']}>
-          <p>{invoice.senderAddress.street}</p>
-          <p>{invoice.senderAddress.city}</p>
-          <p>{invoice.senderAddress.postCode}</p>
-          <p>{invoice.senderAddress.country}</p>
+          <p>{filteredInvoice?.senderAddress.street}</p>
+          <p>{filteredInvoice?.senderAddress.city}</p>
+          <p>{filteredInvoice?.senderAddress.postCode}</p>
+          <p>{filteredInvoice?.senderAddress.country}</p>
         </div>
       </div>
 
@@ -63,21 +65,21 @@ const InvoiceDetails: React.FC<Props> = ({ invoice }) => {
         <div className={styles['client-details__column']}>
           <div className={styles['client-details__row']}>
             <h2>Bill To</h2>
-            <span>{invoice.clientName}</span>
+            <span>{filteredInvoice?.clientName}</span>
             <div
               className={`${styles['invoice-address']} ${styles['invoice-address--client']}`}
             >
-              <p>{invoice.clientAddress.street}</p>
-              <p>{invoice.clientAddress.city}</p>
-              <p>{invoice.clientAddress.postCode}</p>
-              <p>{invoice.clientAddress.country}</p>
+              <p>{filteredInvoice?.clientAddress.street}</p>
+              <p>{filteredInvoice?.clientAddress.city}</p>
+              <p>{filteredInvoice?.clientAddress.postCode}</p>
+              <p>{filteredInvoice?.clientAddress.country}</p>
             </div>
           </div>
         </div>
         <div className={styles['client-details__column']}>
           <div className={styles['client-details__row']}>
             <h2>Sent To</h2>
-            <span>{invoice.clientEmail}</span>
+            <span>{filteredInvoice?.clientEmail}</span>
           </div>
         </div>
       </div>
@@ -91,7 +93,7 @@ const InvoiceDetails: React.FC<Props> = ({ invoice }) => {
             <span className={styles['table-header-total']}>Total</span>
           </div>
           <ul className={styles['invoice-table__list']}>
-            {invoice.items.map((item, index) => (
+            {filteredInvoice?.items.map((item, index) => (
               <li key={Math.random()} className={styles['invoice-table__item']}>
                 <span className={styles['item-name']}>{item.name}</span>
                 <span className={styles['item-qty']}>{item.quantity}</span>

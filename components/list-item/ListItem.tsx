@@ -7,11 +7,11 @@ import ChevronRight from '../icons/ChevronRight';
 import styles from './ListItem.module.scss';
 
 interface Props {
-  id: string;
-  dueDate: string;
+  id?: string;
+  dueDate?: string;
   clientName: string;
-  amount: number;
-  status: string;
+  amount?: number;
+  status?: string;
 }
 
 const ListItem: React.FC<Props> = ({
@@ -25,12 +25,12 @@ const ListItem: React.FC<Props> = ({
     year: 'numeric',
     month: 'short',
     day: 'numeric',
-  }).format(new Date(dueDate));
+  }).format(new Date(dueDate ? dueDate : ''));
 
   const formatedAmount = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'KSh',
-  }).format(amount);
+  }).format(amount ? amount : 0);
 
   return (
     <li className={styles['list-item--li']}>

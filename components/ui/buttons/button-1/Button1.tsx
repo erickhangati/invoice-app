@@ -5,12 +5,12 @@ import styles from './Button1.module.scss';
 
 interface Props {
   children: ReactNode;
-  modalHandler?: () => void;
+  modalOpenHandler?: () => void;
 }
 
-const Button1: React.FC<Props> = ({ children, modalHandler }) => {
+const Button1: React.FC<Props> = ({ children, modalOpenHandler }) => {
   return (
-    <div className={styles.button} onClick={modalHandler}>
+    <div className={styles.button} onClick={modalOpenHandler}>
       <PlusIcon className='' /> <span>{children}</span>
     </div>
   );
