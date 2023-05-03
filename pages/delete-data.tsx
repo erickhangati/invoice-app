@@ -16,7 +16,7 @@ const DeleteDataPage = () => {
 
   return (
     <>
-      <Button1 modalHandler={deletDataHanlder}>Delete Data</Button1>
+      <Button1 modalOpenHandler={deletDataHanlder}>Delete Data</Button1>
     </>
   );
 };

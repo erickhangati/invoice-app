@@ -17,7 +17,7 @@ const LoadDataPage = () => {
 
   return (
     <>
-      <Button1 modalHandler={loadDataHanlder}>Load Sample Data</Button1>
+      <Button1 modalOpenHandler={loadDataHanlder}>Load Sample Data</Button1>
     </>
   );
 };
